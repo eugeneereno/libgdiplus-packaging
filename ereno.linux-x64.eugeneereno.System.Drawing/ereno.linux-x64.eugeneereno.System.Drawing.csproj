@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>net6.0;net48</TargetFrameworks>
     <Title>Linux Native libraries for System.Drawing.Common</Title>
     <Description>Allows you to use System.Drawing.Common on Linux</Description>
     <PackageProjectUrl>https://github.com/eugeneereno/libgdiplus-packaging</PackageProjectUrl>
