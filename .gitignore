@@ -2,7 +2,4 @@
 bin/
 obj/
 out/
-corefx-*/
 *.so
-*.tar.gz
-*.swp

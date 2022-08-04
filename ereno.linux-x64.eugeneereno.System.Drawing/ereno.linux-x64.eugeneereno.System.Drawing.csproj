@@ -1,17 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <Title>Linux Native libraries for System.Drawing.Common</Title>
     <Description>Allows you to use System.Drawing.Common on Linux</Description>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/eugeneereno/libgdiplus-packaging/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/eugeneereno/libgdiplus-packaging</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <Copyright>Mono</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <!-- <PackageLicenseFile>LICENSE</PackageLicenseFile> -->
     <LibOutDir>out/usr/local/lib/</LibOutDir>
   </PropertyGroup>
 
+  <!-- <ItemGroup>
+    <None Include="LICENSE" Pack="true" PackagePath=""/>
+  </ItemGroup> -->
+
   <ItemGroup>
-    <Content Include="$(LibOutDir)*.so" PackagePath="runtimes/linux-x64/native/"/>
+    <Content Include="$(LibOutDir)*.so*" PackagePath="runtimes/linux/lib/"/>
   </ItemGroup>
 </Project>

@@ -10,10 +10,20 @@ if ! command -v brew > /dev/null; then
   exit 1
 fi
 
+if ! command -v dotnet > /dev/null; then
+  echo " --- Command dotnet does not exist" >&2
+  exit 1
+fi
+
 echo " --- :homebrew: Installing libgdiplus and tools ..."
 brew install mono-libgdiplus patchelf
 
-cd runtime.linux-x64.eugeneereno.System.Drawing
+LIBGDIPLUS_VERSION=`brew list --versions | grep libgdiplus | awk -F' ' '{ print $2 }'`
+LIBGDIPLUS_VERSION=`echo "$LIBGDIPLUS_VERSION" | sed -r 's/[_]+/./g'`
+PATCH_NUMBER="1"
+
+NUGET_PREFIX="ereno.linux-x64"
+cd $NUGET_PREFIX.eugeneereno.System.Drawing
 
 OUT=$(pwd)/out/usr/local/lib
 rm -rf $OUT
@@ -29,15 +39,6 @@ cp $HOMEBREW_LIB/libgdiplus.so* "$OUT/"
 for SHARED_OBJ in $LIBGDIPLUS_DEPS; do
   cp $SHARED_OBJ "$OUT/"
 done;
-
-echo " --- :ldd: Printing libcairo dependencies ..."
-ldd $OUT/libcairo.so.2
-
-echo " --- :ldd: Printing libxcb dependencies ..."
-ldd $OUT/libxcb.so.1
-
-echo " --- :ldd: Printing libglib dependencies ..."
-ldd $OUT/libglib-2.0.so.0
 
 echo " --- :patch: Patching dependencies ..."
 for FILE in "$OUT/"*.so*; do
@@ -57,3 +58,7 @@ for FILE in "$OUT/"*.so*; do
   done;
 done
 
+mkdir -p ./bin
+
+dotnet build -c Release -p:Version=${LIBGDIPLUS_VERSION}.${PATCH_NUMBER}
+dotnet pack -c Release -p:Version=${LIBGDIPLUS_VERSION}.${PATCH_NUMBER} -o ./bin/
