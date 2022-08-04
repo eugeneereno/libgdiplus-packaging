@@ -10,13 +10,8 @@ if ! command -v brew > /dev/null; then
   exit 1
 fi
 
-if ! command -v install_name_tool > /dev/null; then
-  echo " --- Command install_name_tool does not exist" >&2
-  exit 1
-fi
-
-echo " --- :homebrew: Installing libgdiplus ..."
-brew install mono-libgdiplus
+echo " --- :homebrew: Installing libgdiplus and tools ..."
+brew install mono-libgdiplus patchelf
 
 cd runtime.linux-x64.eugeneereno.System.Drawing
 
@@ -58,8 +53,7 @@ for FILE in "$OUT/"*.so*; do
       exit 1
     fi
 
-    # # https://github.com/dmikushin/install_name_tool
-    install_name_tool -rpath "$OBJ" "@loader_path/$BASENAME" "$FILE"
+    patchelf --set-rpath \$ORIGIN $FILE
   done;
 done
 
