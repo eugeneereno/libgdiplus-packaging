@@ -20,7 +20,7 @@ brew install mono-libgdiplus patchelf
 
 LIBGDIPLUS_VERSION=`brew list --versions | grep libgdiplus | awk -F' ' '{ print $2 }'`
 LIBGDIPLUS_VERSION=`echo "$LIBGDIPLUS_VERSION" | sed -r 's/[_]+/./g'`
-PATCH_NUMBER="2"
+PATCH_NUMBER="3"
 
 NUGET_PREFIX="ereno.linux-x64"
 cd $NUGET_PREFIX.eugeneereno.System.Drawing

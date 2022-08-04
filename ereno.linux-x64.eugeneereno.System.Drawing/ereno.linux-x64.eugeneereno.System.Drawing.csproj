@@ -18,7 +18,7 @@
   <ItemGroup>
     <Content Include="out/usr/local/lib/**/*">
       <Pack>true</Pack>
-      <PackagePath>runtimes/linux/lib/</PackagePath>
+      <PackagePath>runtimes/linux-x64/native/</PackagePath>
     </Content>
   </ItemGroup>
 </Project>
