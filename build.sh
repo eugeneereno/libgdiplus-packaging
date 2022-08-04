@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -o errexit
 # set -o pipefail
@@ -20,7 +20,7 @@ brew install mono-libgdiplus patchelf
 
 LIBGDIPLUS_VERSION=`brew list --versions | grep libgdiplus | awk -F' ' '{ print $2 }'`
 LIBGDIPLUS_VERSION=`echo "$LIBGDIPLUS_VERSION" | sed -r 's/[_]+/./g'`
-PATCH_NUMBER="1"
+PATCH_NUMBER="2"
 
 NUGET_PREFIX="ereno.linux-x64"
 cd $NUGET_PREFIX.eugeneereno.System.Drawing
@@ -61,4 +61,8 @@ done
 mkdir -p ./bin
 
 dotnet build -c Release -p:Version=${LIBGDIPLUS_VERSION}.${PATCH_NUMBER}
-dotnet pack -c Release -p:Version=${LIBGDIPLUS_VERSION}.${PATCH_NUMBER} -o ./bin/
+
+if [[ $* == *--pack* ]]; then
+  echo " --- :dotnet: Packing ${NUGET_PREFIX}.${LIBGDIPLUS_VERSION}.${PATCH_NUMBER} ..."
+  dotnet pack -c Release -p:Version=${LIBGDIPLUS_VERSION}.${PATCH_NUMBER} -o ./bin/
+fi

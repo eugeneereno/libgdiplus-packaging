@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Title>Linux Native libraries for System.Drawing.Common</Title>
     <Description>Allows you to use System.Drawing.Common on Linux</Description>
     <PackageProjectUrl>https://github.com/eugeneereno/libgdiplus-packaging</PackageProjectUrl>
@@ -9,7 +9,6 @@
     <Copyright>Mono</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <!-- <PackageLicenseFile>LICENSE</PackageLicenseFile> -->
-    <LibOutDir>out/usr/local/lib/</LibOutDir>
   </PropertyGroup>
 
   <!-- <ItemGroup>
@@ -17,6 +16,9 @@
   </ItemGroup> -->
 
   <ItemGroup>
-    <Content Include="$(LibOutDir)*.so*" PackagePath="runtimes/linux/lib/"/>
+    <Content Include="out/usr/local/lib/**/*">
+      <Pack>true</Pack>
+      <PackagePath>runtimes/linux/lib/</PackagePath>
+    </Content>
   </ItemGroup>
 </Project>
