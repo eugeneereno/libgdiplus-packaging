@@ -5,7 +5,7 @@
     <Title>Linux Native libraries for System.Drawing.Common</Title>
     <Description>Allows you to use System.Drawing.Common on Linux</Description>
     <PackageLicenseUrl>https://raw.githubusercontent.com/eugeneereno/libgdiplus-packaging/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/CoreCompat/libgdiplus-packaging</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/eugeneereno/libgdiplus-packaging</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <Copyright>Mono</Copyright>
     <LibOutDir>out/usr/local/lib/</LibOutDir>
