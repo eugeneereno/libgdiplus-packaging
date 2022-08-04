@@ -5,47 +5,61 @@ set -o errexit
 # set -o nounset
 set -o xtrace
 
-LIBGDIPLUS_VERSION="6.0.5"
-
 if ! command -v brew > /dev/null; then
   echo " --- Command brew does not exist" >&2
   exit 1
 fi
 
-if ! command -v git > /dev/null; then
-  echo " --- Command git does not exist" >&2
+if ! command -v install_name_tool > /dev/null; then
+  echo " --- Command install_name_tool does not exist" >&2
   exit 1
 fi
 
-echo " --- :homebrew: Installing dev tools ..."
-brew install autoconf automake libtool pkg-config
+echo " --- :homebrew: Installing libgdiplus ..."
+brew install mono-libgdiplus
 
 cd runtime.linux-x64.eugeneereno.System.Drawing
 
-echo " --- :git: Downloading sources ..."
-rm -rf libgdiplus
-git clone https://github.com/mono/libgdiplus --depth 1 --single-branch --branch ${LIBGDIPLUS_VERSION}
+OUT=$(pwd)/out/usr/local/lib
+rm -rf $OUT
 
-echo " --- :homebrew: Installing dependencies ..."
-brew install libtiff giflib libjpeg glib-utils glib cairo freetype fontconfig libpng
+mkdir -p $OUT
 
-export LDFLAGS="-L/home/linuxbrew/.linuxbrew/opt/libffi/lib"
-export PKG_CONFIG_PATH="/home/linuxbrew/.linuxbrew/opt/libffi/lib/pkgconfig"
+HOMEBREW_LIB=/home/linuxbrew/.linuxbrew/lib
+LIBGDIPLUS_SHARED_OBJ=$HOMEBREW_LIB/libgdiplus.so
+LIBGDIPLUS_DEPS=`ldd "$LIBGDIPLUS_SHARED_OBJ" | grep "/home/linuxbrew/.linuxbrew/" | awk -F' ' '{ print $3 }'`
 
-rm -rf out/usr/local
+cp $HOMEBREW_LIB/libgdiplus.so* "$OUT/"
 
-cd libgdiplus
-./autogen.sh --prefix=$(pwd)/../out/usr/local \
-  CPPFLAGS="-I/home/linuxbrew/.linuxbrew/include" \
-  --without-x11 \
-  --with-cairo
+for SHARED_OBJ in $LIBGDIPLUS_DEPS; do
+  cp $SHARED_OBJ "$OUT/"
+done;
 
-make clean
-make
-# make check
-make install
+echo " --- :ldd: Printing libcairo dependencies ..."
+ldd $OUT/libcairo.so.2
 
-cd $(pwd)/..
-ldd out/usr/local/lib/libgdiplus.so
+echo " --- :ldd: Printing libxcb dependencies ..."
+ldd $OUT/libxcb.so.1
 
-# SHARED_OBJS=`ldd "out/usr/local/lib/libgdiplus.so" | grep "/lib/x86_64-linux-gnu/" | awk -F' ' '{ print $1 }'`
+echo " --- :ldd: Printing libglib dependencies ..."
+ldd $OUT/libglib-2.0.so.0
+
+echo " --- :patch: Patching dependencies ..."
+for FILE in "$OUT/"*.so*; do
+  chmod +w "$FILE"
+
+  SHARED_OBJS=`ldd "$FILE" | grep "/home/linuxbrew/.linuxbrew/" | awk -F' ' '{ print $3 }'`
+
+  for OBJ in $SHARED_OBJS; do
+    BASENAME=`basename "$OBJ"`
+
+    if [ ! -f "$OUT/$BASENAME" ]; then
+      echo " --- :ERROR: The shared object file '$OUT/$BASENAME' does not exist in the output folder; referenced from $FILE" 1>&2
+      exit 1
+    fi
+
+    # # https://github.com/dmikushin/install_name_tool
+    install_name_tool -rpath "$OBJ" "@loader_path/$BASENAME" "$FILE"
+  done;
+done
+
