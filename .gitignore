@@ -1,0 +1,9 @@
+.vs/
+bin/
+obj/
+libgdiplus/
+out/
+corefx-*/
+*.so
+*.tar.gz
+*.swp
